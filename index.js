@@ -1,27 +1,32 @@
-const execSync = require('child_process').execSync
-
-
 let lastCommand
 
-const bugger = () => {
-    let input = execSync(
-        'read input && echo $input',
-        { stdio: ['inherit', 'pipe'] }
-    ).toString()
+const bugger = (name = 'bugger') => {
+    return {
+        [name] () {
+            const execSync = require('child_process').execSync
 
-    if (input.match(/^q(uit)?\s*?$/) || input.match(/^exit\s*?$/)) { return              }
-    if (input.match(/^\_\s*?$/))                                   { input = lastCommand }
+            let input = execSync(
+                'read input && echo $input',
+                { stdio: ['inherit', 'pipe'] }
+            ).toString()
 
-    lastCommand = input
+            if (input.match(/^q(uit)?\s*?$/) || input.match(/^exit\s*?$/)) { return              }
+            if (input.match(/^\_\s*?$/))                                   { input = lastCommand }
 
-    try {
-        const result = eval(input)
-        console.log(result)
-    } catch (err) {
-        console.log(err)
-    }
+            lastCommand = input
 
-    bugger()
+            try {
+                const result = eval(input)
+                console.log(result)
+            } catch (err) {
+                console.log(err)
+            }
+
+            this[name]()
+        }
+    }[name]()
 }
 
-module.exports = bugger;
+module.exports = {
+    debug: bugger.toString(),
+}
