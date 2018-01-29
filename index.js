@@ -1,8 +1,8 @@
 const bugger = () => {
+    const { execSync } = require('child_process')
     let lastCommand
 
     const debug = () => {
-        const { execSync } = require('child_process')
 
         let input = execSync(
             'read input && echo $input',
